@@ -6,7 +6,7 @@ public class GFProtocol {
 	private static final String LOGIN_ACTION			= "L/%s";
 	private static final String LOGIN_RESPONSE			= "LR/%s";
 	private static final String REGISTER_ACTION			= "NU/%s";
-	private static final String REGISTER_RESPONSE		= "NUF/";
+	private static final String REGISTER_RESPONSE		= "NUF/%s";
 	private static final String CARTELA					= "CAT/%s";
 	private static final String BINGO					= "BG/";
 	private static final String BINGO_RESPONSE			= "BGF/%s";
@@ -38,12 +38,48 @@ public class GFProtocol {
 		if(packet.startsWith("RI/") && packetLen > 3)
 			return PacketType.RANKING;
 		
+		if(packet.startsWith("L/") && packetLen > 2)
+			return PacketType.LOGIN;
+		
+		if(packet.startsWith("LR/") && packetLen > 3)
+			return PacketType.LOGIN_F;
+		
+		if(packet.startsWith("NU/") && packetLen > 3)
+			return PacketType.REGISTER;
+		
+		if(packet.startsWith("NUF/") && packetLen > 4)
+			return PacketType.REGISTER_F;
+		
+		if(packet.startsWith("CAT/") && packetLen > 4)
+			return PacketType.CARTELA;
+		
+		if(packet.startsWith("BG/") && packetLen == 3)
+			return PacketType.BINGO;
+		
+		if(packet.startsWith("BGF/") && packetLen == 5)
+			return PacketType.BINGO_F;
+		
+		if(packet.startsWith("MN/") && packetLen > 3)
+			return PacketType.NUMBER_CLICK;
+		
+		if(packet.startsWith("MNF/") && packetLen > 4)
+			return PacketType.NUMBER_CLICK_F;
+		
+		if(packet.startsWith("SN/") && packetLen > 3)
+			return PacketType.SORT_NUMBER;
+		
+		if(packet.startsWith("EG/") && packetLen > 3)
+			return PacketType.END_GAME;
+		
 		return PacketType.NONE;
 	}
 	
 	public static Ranking getRanking(String packet)
 	{
-		return null;
+		if(GFProtocol.getPacketType(packet) == PacketType.RANKING)
+		{
+			
+		}
 	}
 
 }
