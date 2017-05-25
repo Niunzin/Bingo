@@ -12,13 +12,14 @@ public class Game extends Thread {
 	
 	private ArrayList<Player> playerList;
 	private int currentCountDownTime = 0;
+	private boolean started = false;
 	
 	public Game(ServerThread server)
 	{
 		this.playerList = new ArrayList<Player>();
 	}
 	
-	public synchronized void startCountDown()
+	public void startCountDown()
 	{
 		while(currentCountDownTime < START_TIME)
 		{
@@ -29,24 +30,50 @@ public class Game extends Thread {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public synchronized void start()
-	{
 		
+		this.start();
 	}
 	
-	public synchronized void end()
+	public void start()
 	{
+		if(this.started)
+		{
+			System.out.println("Tentativa de iniciar um jogo já iniciado.");
+			return;
+		}
 		
+		this.started = true;
 	}
 	
-	public synchronized boolean isFull()
+	public void end()
+	{
+		this.started = false;
+	}
+	
+	public boolean isFull()
 	{
 		return this.playerList.size() >= Game.PLAYER_LIMIT;
 	}
 	
+	public boolean isGameStarted()
+	{
+		return this.started;
+	}
+	
 	public void onPlayerJoined(Player player)
+	{
+		if(this.isGameStarted)
+		{
+			// Expulsa o jogador da sala
+			player.kick();
+			return;
+		}
+		
+		// Gera uma cartela para o jogador
+		player.setCartela(new Cartela());
+	}
+	
+	public void onPlayerNumberPick(Player player, int number)
 	{
 		
 	}
