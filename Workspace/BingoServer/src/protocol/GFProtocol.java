@@ -4,18 +4,18 @@ import com.google.gson.Gson;
 
 public class GFProtocol {
 
-	private static final String RANKING_INFORMATION		= "RI/%s";
-	private static final String LOGIN_ACTION			= "L/%s";
-	private static final String LOGIN_RESPONSE			= "LR/%s";
-	private static final String REGISTER_ACTION			= "NU/%s";
-	private static final String REGISTER_RESPONSE		= "NUF/%s";
-	private static final String CARTELA					= "CAT/%s";
-	private static final String BINGO					= "BG/";
-	private static final String BINGO_RESPONSE			= "BGF/%s";
-	private static final String NUMBER_CLICK			= "MN/%d";
-	private static final String NUMBER_CLICK_RESPONSE	= "MNF/%s";
-	private static final String SORT_NUMBER				= "SN/%d";
-	private static final String END_GAME				= "EG/%s";
+	public static final String RANKING_INFORMATION		= "RI/%s";
+	public static final String LOGIN_ACTION			= "L/%s";
+	public static final String LOGIN_RESPONSE			= "LR/%s";
+	public static final String REGISTER_ACTION			= "NU/%s";
+	public static final String REGISTER_RESPONSE		= "NUF/%s";
+	public static final String CARTELA					= "CAT/%s";
+	public static final String BINGO					= "BG/";
+	public static final String BINGO_RESPONSE			= "BGF/%s";
+	public static final String NUMBER_CLICK			= "MN/%d";
+	public static final String NUMBER_CLICK_RESPONSE	= "MNF/%s";
+	public static final String SORT_NUMBER				= "SN/%d";
+	public static final String END_GAME				= "EG/%s";
 	
 	static class PacketType {
 		static final int NONE			= 0;

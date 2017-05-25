@@ -20,9 +20,13 @@ public class ClientThread extends Thread {
 	@Override
 	public void run() {
 		
-		this.handler.sendMessage(SocketHandler.MESSAGE_CONNECTED);
 		// ENVIAR RANKING POR MENSAGEM
 
+	}
+	
+	public void sendPacket(String packet)
+	{
+		this.handler.sendMessage(packet);
 	}
 
 }

@@ -9,11 +9,6 @@ public class SocketHandler {
 	protected Socket		socket		= null;
 	protected PrintStream	printStream	= null;
 	
-	public static final String MESSAGE_DISCONNECTED		= "DC";
-	public static final String MESSAGE_CONNECTED		= "CD";
-	public static final String MESSAGE_SERVER_FULL		= "SF";
-	public static final String MESSAGE_GAME_STARTED		= "GS";
-	
 	public SocketHandler(Socket socket)
 	{
 		if(socket == null)

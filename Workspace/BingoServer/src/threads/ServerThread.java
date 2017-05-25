@@ -127,19 +127,15 @@ public class ServerThread extends Thread {
 		System.out.println("Jogo iniciado.");
 	}
 	
-	private synchronized boolean isServerFull()
-	{
-		return (this.clientList.size() == ServerThread.MAX_CLIENT_CONNECTION);
-	}
-	
 	private synchronized void addClient(ClientThread client)
 	{
 		this.clientList.add(client);
 	}
 	
-	private synchronized int getClientCount()
+	public void sendBroadcast(String packet)
 	{
-		return this.clientList.size();
+		for(ClientThread client : clientList)
+			client.sendPacket(packet);
 	}
 
 }
