@@ -1,40 +1,62 @@
 package daos;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import db.DB;
+import db.GFResultSet;
 import protocol.Player;
 
+/**
+ * Classe para gerenciar jogadores no banco de dados.
+ * @author Gustavo Ifanger
+ * 
+ */
 public class Players {
 	
-	public static boolean exists(String email)
+	/**
+	 * Verifica se um jogador já existe no banco de dados.
+	 * @param email Email do jogador a ser verificado.
+	 * @return Verdadeiro caso o jogador exista.
+	 * @throws Exception Caso não seja possível realizar a query sql.
+	 */
+	private static boolean playerExists(String email) throws Exception
 	{
-		boolean result = false;
+		boolean ret = false;
 		
 		try
 		{
-			String sqlQuery = "";
+			String sqlQuery = "SELECT * FROM players WHERE email = ?";
 			
 			DB.command.prepareStatement(sqlQuery);
+			DB.command.setString(1, email);
 			
-			
+			GFResultSet result = (GFResultSet) DB.command.executeQuery();
+			ret = result.first();
 		} catch(SQLException e)
 		{
-			System.err.println(e.getMessage());
-			result = false;
+			System.out.println(e.getMessage());
+			throw new Exception("Falha ao verificar usuário.");
 		}
 		
-		return result;
+		return ret;
 	}
 	
+	/**
+	 * Cadastra um novo jogador no banco de dados.
+	 * @param player Jogador a ser cadastrado.
+	 * @param password Senha do jogador já com a criptografia.
+	 * @throws Exception Caso a senha não esteja criptografada ou já exista um usuário com o mesmo e-mail.
+	 */
 	public static void register(Player player, String password) throws Exception
 	{
 		if(player == null)
 			throw new Exception("Falha ao registrar usuário. (Player equals null)");
 		
-		if(password.length() != 32) // nao foi criptografada
+		if(password.length() != 32)
 			throw new Exception("Tentativa de registrar usuário sem senha segura.");
+		
+		if(playerExists(player.getEmail()))
+			throw new Exception("Já existe um usuário com esse e-mail.");
 		
 		try
 		{
@@ -55,4 +77,37 @@ public class Players {
 		}
 	}
 	
+	/**
+	 * Obtem um jogador através do email.
+	 * @param email Email do jogador a ser obtido.
+	 * @return Objeto do jogador caso o mesmo exista, se não, retorna nulo.
+	 * @throws Exception Caso não exista jogador com o e-mail cadastrado.
+	 */
+	public static Player getPlayer(String email) throws Exception
+	{
+		Player player = null;
+		
+		try
+		{
+			String sqlQuery = "SELECT * FROM players WHERE email = ?";
+			
+			DB.command.prepareStatement(sqlQuery);
+			DB.command.setString(1, email);
+			
+			GFResultSet result = (GFResultSet)DB.command.executeQuery();
+			
+			if(result.first())
+				throw new Exception("Não existe usuário cadastrado com esse e-mail.");
+			
+			player = new Player(
+					result.getString("email"),
+					result.getString("name"));
+			player.setWinsCount(result.getInt("monthlyWins"));
+		} catch(SQLException e)
+		{
+			throw new Exception("Falha ao obter jogador.");
+		}
+		
+		return player;
+	}
 }

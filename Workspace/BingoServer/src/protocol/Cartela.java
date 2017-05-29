@@ -20,7 +20,7 @@ public class Cartela {
 		}
 	}
 	
-	private int getRandomNumber()
+	public static int getRandomNumber()
 	{
 		int rdN = new Random().nextInt(98);
 		return rdN + 1;

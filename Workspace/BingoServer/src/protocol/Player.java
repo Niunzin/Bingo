@@ -7,16 +7,19 @@ public class Player {
 	private String email;
 	private int winsCount;
 	private ClientThread clientThread;
+	private Cartela cartela;
 	
-	public Player(String name, String email, int winsCount, ClientThread cThread)
+	public Player(String name, String email)
 	{
 		this.name = name;
 		this.email = email;
 		this.winsCount = 0;
-		this.clientThread = cThread;
-		
-		if(winsCount >= 0)
-			this.winsCount = winsCount;
+		this.clientThread = null;
+	}
+	
+	public void setConnection(ClientThread ct)
+	{
+		this.clientThread = ct;
 	}
 
 	public String getName() {
@@ -45,12 +48,23 @@ public class Player {
 	
 	public void kick()
 	{
-		this.clientThread.sendPacket("expulso");
+		if(this.clientThread == null)
+		{
+			System.out.println("Falha ao expulsar " + this.getName() + ".");
+			return;
+		}
+			
+		this.clientThread.sendPacket(GFProtocol.KICK);
+	}
+	
+	public Cartela getCartela()
+	{
+		return this.cartela;
 	}
 	
 	public void setCartela(Cartela cartela)
 	{
-		
+		this.cartela = cartela;
 	}
 	
 	public void sendMessage(String message)

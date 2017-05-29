@@ -12,6 +12,7 @@ public class Game extends Thread {
 	public static final int START_TIME		= 10;
 	
 	private ArrayList<Player> playerList;
+	private ArrayList<Integer> drawnNumbers = new ArrayList<Integer>();
 	private int currentCountDownTime = 0;
 	private boolean started = false;
 	
@@ -20,7 +21,7 @@ public class Game extends Thread {
 		this.playerList = new ArrayList<Player>();
 	}
 	
-	public void startCountDown()
+	public synchronized void startCountDown()
 	{
 		while(currentCountDownTime < START_TIME)
 		{
@@ -35,7 +36,7 @@ public class Game extends Thread {
 		this.start();
 	}
 	
-	public void start()
+	public synchronized void start()
 	{
 		if(this.started)
 		{
@@ -43,25 +44,27 @@ public class Game extends Thread {
 			return;
 		}
 		
+		
+		
 		this.started = true;
 	}
 	
-	public void end()
+	public synchronized void end()
 	{
 		this.started = false;
 	}
 	
-	public boolean isFull()
+	public synchronized boolean isFull()
 	{
 		return this.playerList.size() >= Game.PLAYER_LIMIT;
 	}
 	
-	public boolean isGameStarted()
+	public synchronized boolean isGameStarted()
 	{
 		return this.started;
 	}
 	
-	public void onPlayerJoined(Player player)
+	public synchronized void onPlayerJoined(Player player)
 	{
 		if(this.isGameStarted())
 		{
@@ -75,8 +78,13 @@ public class Game extends Thread {
 		player.setCartela(new Cartela());
 	}
 	
-	public void onPlayerNumberPick(Player player, int number)
+	public synchronized void onPlayerNumberPick(Player player, int number)
 	{
 		
+	}
+	
+	public synchronized void onDrawnNumber(int number)
+	{
+		this.drawnNumbers.add(number);
 	}
 }

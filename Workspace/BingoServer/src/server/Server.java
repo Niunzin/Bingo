@@ -1,7 +1,5 @@
 package server;
 
-import java.util.Random;
-
 import daos.Players;
 import protocol.GFSecurity;
 import protocol.Player;
@@ -14,7 +12,7 @@ public class Server {
 	{
 		try
 		{
-			Players.register(new Player("Gustavo Ifanger", "gustavoaifanger@gmail.com", 0, null), GFSecurity.passwordHash("123"));
+			//Players.register(new Player("Gustavo Ifanger", "gustavoaifanger@gmail.com"), GFSecurity.passwordHash("123"));
 			
 			Thread serverThread =
 					new ServerThread(Server.LISTEN_PORT);
