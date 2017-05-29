@@ -1,5 +1,10 @@
 package server;
 
+import java.util.Random;
+
+import daos.Players;
+import protocol.GFSecurity;
+import protocol.Player;
 import threads.ServerThread;
 
 public class Server {
@@ -7,9 +12,18 @@ public class Server {
 	
 	public static void main(String args[])
 	{
-		ServerThread serverThread =
-				new ServerThread(Server.LISTEN_PORT);
-		
-		serverThread.start();
+		try
+		{
+			Players.register(new Player("Gustavo Ifanger", "gustavoaifanger@gmail.com", 0, null), GFSecurity.passwordHash("123"));
+			
+			Thread serverThread =
+					new ServerThread(Server.LISTEN_PORT);
+			
+			serverThread.start();
+		} catch(Exception e)
+		{
+			e.printStackTrace();
+			System.err.println(e.getMessage());
+		}
 	}
 }

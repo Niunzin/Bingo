@@ -1,23 +1,44 @@
 package threads;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
+import com.google.gson.Gson;
+
+import game.Game;
+import protocol.GFProtocol;
+import protocol.Player;
 import server.SocketHandler;
 
 public class ClientThread extends Thread {
 	protected Socket 					socket 			= null;
 	protected ArrayList<ClientThread>	clientList		= null;
 	protected SocketHandler				handler			= null;
+	protected Game						game			= null;
 	protected BufferedReader			reader			= null;
+	protected Scanner					input			= null;
+	protected Gson						gson			= null;
 	
-	public ClientThread(Socket socket, ArrayList<ClientThread> clientList, SocketHandler handler)
+	public ClientThread(Socket socket, ArrayList<ClientThread> clientList, SocketHandler handler, Game game)
 	{
 		this.socket		= socket;
 		this.clientList	= clientList;
 		this.handler	= handler;
+		this.game		= game;
+		this.gson		= new Gson();
 		
-		InputStream			inStream 		= this.socket.getInputStream();
+		InputStream inStream = null;
+		try {
+			inStream = this.socket.getInputStream();
+			this.input = new Scanner(this.socket.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		InputStreamReader	inStreamReader	= new InputStreamReader(inStream);
 		this.reader = new BufferedReader(inStreamReader);
 	}
@@ -25,55 +46,51 @@ public class ClientThread extends Thread {
 	@Override
 	public void run()
 	{
-		for(;;)
+		while(this.input.hasNextLine())
 		{
-			if(this.reader.ready())
+			String receivedPacket = this.input.nextLine();
+			int packetType = GFProtocol.getPacketType(receivedPacket);
+			
+			System.out.println("Pacote recebido: " + receivedPacket);
+			
+			if(packetType == GFProtocol.PacketType.RANKING)
 			{
-				String receivedPacket = this.reader.readLine();
-				int packetType = GFProtocol.getPacketType(receivedPacket);
+				this.handler.sendMessage(String.format(GFProtocol.RANKING_INFORMATION, "{}"));
+			} else if(packetType == GFProtocol.PacketType.LOGIN)
+			{
+				Player receivedPlayer = GFProtocol.getPlayerFromLoginPacket(receivedPacket);
+				Player player = null;
+				boolean success = false;
 				
-				switch(packetType)
+				if(receivedPlayer != null)
 				{
-					case GFProtocol.PacketType.RANKING: // Solicitação de ranking
-						this.handler.sendMessage(String.format(GFProtocol.RANKING_INFORMATION, "{}"));
-						break;
-					case GFProtocol.PacketType.LOGIN: // Tentativa de login
-						String username = "";
-						String password = "";
-						boolean success = false;
-						
-						// consulta o banco de dados
-						// verifica as credenciais
-						this.handler.sendMessage(String.format(GFProtocol.LOGIN_RESPONSE, ((success) ? "T" : "F" )));
-						
-						// Informa o servidor sobre o login do jogador
-						if(success)
-							game.onPlayerJoined(player);
-						
-						break;
-					case GFProtocol.PacketType.REGISTER: // Tentativa de registro
-						String name, password, email;
-						boolean success = false;
-						
-						// consulta banco de dados
-						// verifica credenciais
-						
-						this.handler.sendMessage(String.format(GFProtocol.REGISTER_RESPONSE, ((success) ? "T" : "F" )));
-						
-						
-						break;
-					default: // Pacote desconhecido
-						this.handler.sendMessage("MENSAGEM DE EXPULSÃO DEVIDO A PACOTE DESCONHECIDO");
-						break;
+					
+					
+					
 				}
-
+				
+				this.sendPacket(String.format(GFProtocol.LOGIN_RESPONSE, ((success) ? "T" : "F" )));
+				
+				if(success && player != null)
+				{
+					System.out.println("O jogador " + player.getName() + " entrou no jogo.");
+					game.onPlayerJoined(player);
+				}
+			} else if(packetType == GFProtocol.PacketType.REGISTER)
+			{
+				
+			} else
+			{
+				System.out.println("Pacote estranho recebido.");
+				this.sendPacket(GFProtocol.KICK);
 			}
 		}
 	}
-	
+
 	public void sendPacket(String packet)
 	{
 		this.handler.sendMessage(packet);
 	}
+	
 
 }

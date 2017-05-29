@@ -1,15 +1,19 @@
 package protocol;
 
+import threads.ClientThread;
+
 public class Player {
 	private String name;
 	private String email;
 	private int winsCount;
+	private ClientThread clientThread;
 	
-	public Player(String name, String email, int winsCount)
+	public Player(String name, String email, int winsCount, ClientThread cThread)
 	{
 		this.name = name;
 		this.email = email;
 		this.winsCount = 0;
+		this.clientThread = cThread;
 		
 		if(winsCount >= 0)
 			this.winsCount = winsCount;
@@ -37,6 +41,21 @@ public class Player {
 
 	public void setWinsCount(int winsCount) {
 		this.winsCount = winsCount;
+	}
+	
+	public void kick()
+	{
+		this.clientThread.sendPacket("expulso");
+	}
+	
+	public void setCartela(Cartela cartela)
+	{
+		
+	}
+	
+	public void sendMessage(String message)
+	{
+		
 	}
 
 	@Override

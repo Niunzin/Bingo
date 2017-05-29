@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import game.Game;
 import server.SocketHandler;
 
 public class ServerThread extends Thread {
@@ -33,9 +34,12 @@ public class ServerThread extends Thread {
 		// Inicializa o ServerSocket
 		this.startServer();
 		
+		Game game = new Game(this);
+		
 		// Executa operações enquanto o servidor estiver vivo
 		while(!serverStopped)
 		{
+			System.out.println("Aguardando por novas conexões.");
 			// Inicialização de um cliente
 			Socket clientSocket = null;
 			try
@@ -60,11 +64,11 @@ public class ServerThread extends Thread {
 			{
 				SocketHandler handler = new SocketHandler(clientSocket);
 				
-				ClientThread clientThread =
-						new ClientThread(clientSocket, this.clientList, handler);
+				Thread clientThread =
+						new ClientThread(clientSocket, this.clientList, handler, game);
 				
 				// Adiciona o cliente na lista de clientes
-				this.addClient(clientThread);
+				this.addClient((ClientThread) clientThread);
 				clientThread.start();
 			}
 		}
