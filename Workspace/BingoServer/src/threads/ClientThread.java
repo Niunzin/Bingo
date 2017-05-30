@@ -10,9 +10,11 @@ import java.util.Scanner;
 
 import com.google.gson.Gson;
 
+import daos.Players;
 import game.Game;
 import protocol.GFProtocol;
 import protocol.Player;
+import protocol.Ranking;
 import server.SocketHandler;
 
 public class ClientThread extends Thread {
@@ -55,7 +57,8 @@ public class ClientThread extends Thread {
 			
 			if(packetType == GFProtocol.PacketType.RANKING)
 			{
-				this.handler.sendMessage(String.format(GFProtocol.RANKING_INFORMATION, "{}"));
+				Ranking ranking = null;
+				this.handler.sendMessage(String.format(GFProtocol.RANKING_INFORMATION, gson.toJson(ranking)));
 			} else if(packetType == GFProtocol.PacketType.LOGIN)
 			{
 				Player receivedPlayer = GFProtocol.getPlayerFromLoginPacket(receivedPacket);
@@ -64,9 +67,14 @@ public class ClientThread extends Thread {
 				
 				if(receivedPlayer != null)
 				{
-					
-					
-					
+					try {
+						Player dbPlayer = Players.getPlayer(player.getEmail());
+						
+						if(dbPlayer.getPassword().equals(player.getPassword()))
+							success = true;
+					} catch (Exception e) {
+						success = false;
+					}
 				}
 				
 				this.sendPacket(String.format(GFProtocol.LOGIN_RESPONSE, ((success) ? "T" : "F" )));
@@ -78,7 +86,19 @@ public class ClientThread extends Thread {
 				}
 			} else if(packetType == GFProtocol.PacketType.REGISTER)
 			{
+				Player newPlayer = GFProtocol.getPlayerFromRegisterPacket(receivedPacket);
+				boolean success = false;
 				
+				try
+				{
+					Players.register(newPlayer);
+					success = true;
+				} catch(Exception e)
+				{
+					success = false;
+				}
+				
+				this.sendPacket(String.format(GFProtocol.REGISTER_RESPONSE, ((success) ? "T" : "F" )));
 			} else
 			{
 				System.out.println("Pacote estranho recebido.");
@@ -92,5 +112,9 @@ public class ClientThread extends Thread {
 		this.handler.sendMessage(packet);
 	}
 	
+	public void disconnect()
+	{
+		this.handler.disconnect();
+	}
 
 }

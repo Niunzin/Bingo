@@ -1,25 +1,14 @@
 package protocol;
 
-import threads.ClientThread;
-
 public class Player {
 	private String name;
 	private String email;
+	private String password;
 	private int winsCount;
-	private ClientThread clientThread;
-	private Cartela cartela;
 	
-	public Player(String name, String email)
+	public Player()
 	{
-		this.name = name;
-		this.email = email;
 		this.winsCount = 0;
-		this.clientThread = null;
-	}
-	
-	public void setConnection(ClientThread ct)
-	{
-		this.clientThread = ct;
 	}
 
 	public String getName() {
@@ -46,30 +35,12 @@ public class Player {
 		this.winsCount = winsCount;
 	}
 	
-	public void kick()
-	{
-		if(this.clientThread == null)
-		{
-			System.out.println("Falha ao expulsar " + this.getName() + ".");
-			return;
-		}
-			
-		this.clientThread.sendPacket(GFProtocol.KICK);
+	public String getPassword() {
+		return password;
 	}
-	
-	public Cartela getCartela()
-	{
-		return this.cartela;
-	}
-	
-	public void setCartela(Cartela cartela)
-	{
-		this.cartela = cartela;
-	}
-	
-	public void sendMessage(String message)
-	{
-		
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override

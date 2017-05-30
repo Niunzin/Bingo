@@ -68,14 +68,14 @@ public class Game extends Thread {
 	{
 		if(this.isGameStarted())
 		{
-			player.sendMessage("O jogo já começou!");
+			//player.sendMessage("O jogo já começou!");
 			// Expulsa o jogador da sala
-			player.kick();
+			//player.kick();
 			return;
 		}
 		
 		// Gera uma cartela para o jogador
-		player.setCartela(new Cartela());
+		//player.setCartela(new Cartela());
 	}
 	
 	public synchronized void onPlayerNumberPick(Player player, int number)

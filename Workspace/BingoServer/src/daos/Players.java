@@ -47,12 +47,12 @@ public class Players {
 	 * @param password Senha do jogador já com a criptografia.
 	 * @throws Exception Caso a senha não esteja criptografada ou já exista um usuário com o mesmo e-mail.
 	 */
-	public static void register(Player player, String password) throws Exception
+	public static void register(Player player) throws Exception
 	{
 		if(player == null)
 			throw new Exception("Falha ao registrar usuário. (Player equals null)");
 		
-		if(password.length() != 32)
+		if(player.getPassword().length() != 32)
 			throw new Exception("Tentativa de registrar usuário sem senha segura.");
 		
 		if(playerExists(player.getEmail()))
@@ -61,13 +61,13 @@ public class Players {
 		try
 		{
 			String sqlQuery = "INSERT INTO players "
-					+ "(email, name, senha, registerDate, monthlyWins) "
+					+ "(email, name, password, registerDate, monthlyWins) "
 					+ "VALUES (?, ?, ?, CURDATE(), 0)";
 			
 			DB.command.prepareStatement(sqlQuery);
 			DB.command.setString(1, player.getEmail());
 			DB.command.setString(2, player.getName());
-			DB.command.setString(3, password);
+			DB.command.setString(3, player.getPassword());
 			DB.command.executeUpdate();
 			DB.command.commit();
 		} catch(SQLException e)
@@ -99,9 +99,10 @@ public class Players {
 			if(result.first())
 				throw new Exception("Não existe usuário cadastrado com esse e-mail.");
 			
-			player = new Player(
-					result.getString("email"),
-					result.getString("name"));
+			player = new Player();
+			player.setEmail(result.getString("email"));
+			player.setName(result.getString("name"));
+			player.setPassword(result.getString("password"));
 			player.setWinsCount(result.getInt("monthlyWins"));
 		} catch(SQLException e)
 		{

@@ -102,14 +102,23 @@ public class GFProtocol {
 	public static Player getPlayerFromLoginPacket(String packet)
 	{
 		String data = packet.substring(2);
+		Player player = null;
 		
 		if(getPacketType(packet) == PacketType.LOGIN)
-		{
-			Player player = gson().fromJson(data, Player.class);
-			return player;
-		}
+			player = gson().fromJson(data, Player.class);
 		
-		return null;
+		return player;
+	}
+	
+	public static Player getPlayerFromRegisterPacket(String packet)
+	{
+		String data = packet.substring(3);
+		Player player = null;
+		
+		if(getPacketType(packet) == PacketType.REGISTER)
+			player = gson().fromJson(data, Player.class);
+		
+		return player;
 	}
 
 }

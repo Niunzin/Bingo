@@ -1,8 +1,5 @@
 package server;
 
-import daos.Players;
-import protocol.GFSecurity;
-import protocol.Player;
 import threads.ServerThread;
 
 public class Server {
@@ -12,8 +9,6 @@ public class Server {
 	{
 		try
 		{
-			//Players.register(new Player("Gustavo Ifanger", "gustavoaifanger@gmail.com"), GFSecurity.passwordHash("123"));
-			
 			Thread serverThread =
 					new ServerThread(Server.LISTEN_PORT);
 			

@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 
+import game.PlayerHandler;
 import protocol.Cartela;
 import protocol.Player;
 import threads.ServerThread;
@@ -61,20 +62,20 @@ public class Game extends Thread {
 		return this.started;
 	}
 	
-	public void onPlayerJoined(Player player)
+	public void onPlayerJoined(PlayerHandler player)
 	{
 		if(this.isGameStarted())
 		{
 			// Expulsa o jogador da sala
-			player.kick();
+			//player.kick();
 			return;
 		}
 		
 		// Gera uma cartela para o jogador
-		player.setCartela(new Cartela());
+		//player.setCartela(new Cartela());
 	}
 	
-	public void onPlayerNumberPick(Player player, int number)
+	public void onPlayerNumberPick(PlayerHandler player, int number)
 	{
 		
 	}
