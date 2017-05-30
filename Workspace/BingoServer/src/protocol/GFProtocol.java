@@ -89,14 +89,18 @@ public class GFProtocol {
 	public static Ranking getRanking(String packet)
 	{
 		String data = packet.substring(3);
+		Ranking ranking = null;
 		
 		if(getPacketType(packet) == PacketType.RANKING)
 		{
-			Ranking ranking = gson().fromJson(data, Ranking.class);
-			return ranking;
+			try
+			{
+				ranking = gson().fromJson(data, Ranking.class);
+			} catch(Exception e)
+			{}
 		}
 		
-		return null;
+		return ranking;
 	}
 	
 	public static Player getPlayerFromLoginPacket(String packet)
@@ -105,7 +109,13 @@ public class GFProtocol {
 		Player player = null;
 		
 		if(getPacketType(packet) == PacketType.LOGIN)
-			player = gson().fromJson(data, Player.class);
+		{
+			try
+			{
+				player = gson().fromJson(data, Player.class);
+			} catch(Exception e)
+			{}
+		}
 		
 		return player;
 	}
@@ -116,7 +126,13 @@ public class GFProtocol {
 		Player player = null;
 		
 		if(getPacketType(packet) == PacketType.REGISTER)
-			player = gson().fromJson(data, Player.class);
+		{
+			try
+			{
+				player = gson().fromJson(data, Player.class);
+			} catch(Exception e)
+			{}
+		}
 		
 		return player;
 	}

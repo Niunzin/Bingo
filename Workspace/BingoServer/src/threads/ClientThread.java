@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import daos.Players;
 import game.Game;
+import game.PlayerHandler;
 import protocol.GFProtocol;
 import protocol.Player;
 import protocol.Ranking;
@@ -62,16 +63,19 @@ public class ClientThread extends Thread {
 			} else if(packetType == GFProtocol.PacketType.LOGIN)
 			{
 				Player receivedPlayer = GFProtocol.getPlayerFromLoginPacket(receivedPacket);
-				Player player = null;
+				PlayerHandler player = null;
 				boolean success = false;
 				
 				if(receivedPlayer != null)
 				{
 					try {
-						Player dbPlayer = Players.getPlayer(player.getEmail());
+						Player dbPlayer = Players.getPlayer(receivedPlayer.getEmail());
 						
-						if(dbPlayer.getPassword().equals(player.getPassword()))
+						if(dbPlayer.getPassword().equals(receivedPlayer.getPassword()))
+						{
+							player = new PlayerHandler(dbPlayer, this);
 							success = true;
+						}
 					} catch (Exception e) {
 						success = false;
 					}
@@ -98,7 +102,7 @@ public class ClientThread extends Thread {
 					success = false;
 				}
 				
-				this.sendPacket(String.format(GFProtocol.REGISTER_RESPONSE, ((success) ? "T" : "F" )));
+				this.sendPacket(String.format(GFProtocol.REGISTER_RESPONSE, ((success) ? "T" : "F")));
 			} else
 			{
 				System.out.println("Pacote estranho recebido.");

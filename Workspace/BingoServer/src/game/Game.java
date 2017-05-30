@@ -44,8 +44,6 @@ public class Game extends Thread {
 			return;
 		}
 		
-		
-		
 		this.started = true;
 	}
 	
@@ -64,13 +62,13 @@ public class Game extends Thread {
 		return this.started;
 	}
 	
-	public synchronized void onPlayerJoined(Player player)
+	public synchronized void onPlayerJoined(PlayerHandler player)
 	{
 		if(this.isGameStarted())
 		{
 			//player.sendMessage("O jogo já começou!");
 			// Expulsa o jogador da sala
-			//player.kick();
+			player.kick();
 			return;
 		}
 		
@@ -78,7 +76,7 @@ public class Game extends Thread {
 		//player.setCartela(new Cartela());
 	}
 	
-	public synchronized void onPlayerNumberPick(Player player, int number)
+	public synchronized void onPlayerNumberPick(PlayerHandler player, int number)
 	{
 		
 	}
