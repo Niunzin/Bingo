@@ -9,16 +9,12 @@ import game.Game;
 import server.SocketHandler;
 
 public class ServerThread extends Thread {
-	private static final int MAX_CLIENT_CONNECTION	= 10;
-	private static final int GAME_START_TIME		= 10;
 	
 	protected int 						serverPort		= 8090;
 	protected ServerSocket				serverSocket	= null;
 	protected boolean 					serverStopped	= false;
 	protected Thread					runningThread	= null;
 	protected ArrayList<ClientThread>	clientList		= null;
-	protected boolean					gameStarted		= false;
-	protected int						curStartTime	= 0;
 	
 	public ServerThread(int port) {
 		this.serverPort = port;
@@ -35,11 +31,11 @@ public class ServerThread extends Thread {
 		this.startServer();
 		
 		Game game = new Game(this);
+		System.out.println("Aguardando conexões.");
 		
 		// Executa operações enquanto o servidor estiver vivo
 		while(!serverStopped)
 		{
-			System.out.println("Aguardando por novas conexões.");
 			// Inicialização de um cliente
 			Socket clientSocket = null;
 			try
@@ -106,40 +102,8 @@ public class ServerThread extends Thread {
 		}
 	}
 	
-	private synchronized boolean isGameStarted()
-	{
-		return this.gameStarted;
-	}
-	
-	private synchronized void startCountDown()
-	{
-		this.curStartTime = 0;
-		int gstMs = (ServerThread.GAME_START_TIME * 60 * 1000);
-		System.out.println("Aguardando " + ServerThread.GAME_START_TIME + " minutos para início do jogo.");
-		
-		try {
-			Thread.sleep(gstMs);
-			startGame();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private synchronized void startGame()
-	{
-		this.gameStarted = true;
-		System.out.println("Jogo iniciado.");
-	}
-	
 	private synchronized void addClient(ClientThread client)
 	{
 		this.clientList.add(client);
 	}
-	
-	public void sendBroadcast(String packet)
-	{
-		for(ClientThread client : clientList)
-			client.sendPacket(packet);
-	}
-
 }

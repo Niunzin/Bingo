@@ -6,10 +6,10 @@ public class Server {
 	private static final int LISTEN_PORT	= 8090;
 	
 	public static void main(String args[])
-	{	
+	{
 		try
 		{
-			Thread serverThread =
+			ServerThread serverThread =
 					new ServerThread(Server.LISTEN_PORT);
 			
 			serverThread.start();
