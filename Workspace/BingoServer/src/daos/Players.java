@@ -98,7 +98,7 @@ public class Players {
 			
 			GFResultSet result = (GFResultSet)DB.command.executeQuery();
 			
-			if(result.first())
+			if(!result.first())
 				throw new Exception("Não existe usuário cadastrado com esse e-mail.");
 			
 			player = new Player();
@@ -108,12 +108,18 @@ public class Players {
 			player.setWinsCount(result.getInt("monthlyWins"));
 		} catch(SQLException e)
 		{
+			e.printStackTrace();
 			throw new Exception("Falha ao obter jogador.");
 		}
 		
 		return player;
 	}
 	
+	/**
+	 * Retorna o Ranking de Jogadores
+	 * @return Ranking dos jogadores
+	 * @throws Exception Caso ocorra algum problema durante a conexão com o banco de dados.
+	 */
 	public static Ranking getRanking() throws Exception
 	{
 		Ranking ranking = null;

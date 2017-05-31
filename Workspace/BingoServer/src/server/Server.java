@@ -1,5 +1,9 @@
 package server;
 
+import com.google.gson.Gson;
+
+import daos.Players;
+import protocol.Ranking;
 import threads.ServerThread;
 
 public class Server {
@@ -7,6 +11,13 @@ public class Server {
 	
 	public static void main(String args[])
 	{
+		try
+		{
+			Ranking rank = Players.getRanking();
+			String r = new Gson().toJson(rank);
+			System.out.println(r);
+		} catch(Exception e) { System.out.println(e.getMessage()); }
+		
 		try
 		{
 			ServerThread serverThread =
