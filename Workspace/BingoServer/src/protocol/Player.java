@@ -8,6 +8,9 @@ public class Player {
 	
 	public Player()
 	{
+		this.name = "";
+		this.email = "";
+		this.password = "";
 		this.winsCount = 0;
 	}
 

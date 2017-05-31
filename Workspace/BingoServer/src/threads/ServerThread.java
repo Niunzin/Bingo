@@ -102,7 +102,7 @@ public class ServerThread extends Thread {
 			System.out.println("Servidor iniciado na porta " + this.serverPort + ".");
 		} catch(IOException e)
 		{
-			throw new RuntimeException("Não foi possível iniciar o servidor na porta " + this.serverPort + ".", e);
+			System.out.println("Não foi possível iniciar o servidor na porta " + this.serverPort + ".");
 		}
 	}
 	

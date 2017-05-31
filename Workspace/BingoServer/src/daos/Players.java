@@ -1,10 +1,12 @@
 package daos;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import db.DB;
 import db.GFResultSet;
 import protocol.Player;
+import protocol.Ranking;
 
 /**
  * Classe para gerenciar jogadores no banco de dados.
@@ -110,5 +112,55 @@ public class Players {
 		}
 		
 		return player;
+	}
+	
+	public static Ranking getRanking() throws Exception
+	{
+		Ranking ranking = null;
+		
+		try
+		{	
+			GFResultSet result = null;
+			String sqlQuery = "SELECT email FROM players ORDER BY monthlyWins DESC LIMIT 3";
+			
+			DB.command.prepareStatement(sqlQuery);
+			result = (GFResultSet) DB.command.executeQuery();
+
+			int i = 0;
+			
+			Player p1 = null;
+			Player p2 = null;
+			Player p3 = null;
+			
+			while(result.next())
+			{
+				String playerEmail = result.getString("email");
+				Player player = Players.getPlayer(playerEmail);
+				
+				switch(i)
+				{
+					case 0:
+						p1 = player;
+						break;
+					case 1:
+						p2 = player;
+						break;
+					case 2:
+						p3 = player;
+						break;
+					default:
+						break;
+				}
+				
+				i++;
+			}
+			
+			ranking = new Ranking(p1, p2, p3);
+		} catch(SQLException e)
+		{
+			throw new Exception("Falha ao obter ranking.");
+		}
+		
+		return ranking;
 	}
 }

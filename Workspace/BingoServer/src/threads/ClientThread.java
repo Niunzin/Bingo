@@ -23,9 +23,9 @@ public class ClientThread extends Thread {
 	protected ArrayList<ClientThread>	clientList		= null;
 	protected SocketHandler				handler			= null;
 	protected Game						game			= null;
-	protected BufferedReader			reader			= null;
 	protected Scanner					input			= null;
 	protected Gson						gson			= null;
+	protected PlayerHandler				player 			= null;
 	
 	public ClientThread(Socket socket, ArrayList<ClientThread> clientList, SocketHandler handler, Game game)
 	{
@@ -35,15 +35,11 @@ public class ClientThread extends Thread {
 		this.game		= game;
 		this.gson		= new Gson();
 		
-		InputStream inStream = null;
 		try {
-			inStream = this.socket.getInputStream();
 			this.input = new Scanner(this.socket.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		InputStreamReader	inStreamReader	= new InputStreamReader(inStream);
-		this.reader = new BufferedReader(inStreamReader);
 	}
 
 	@Override
@@ -63,7 +59,6 @@ public class ClientThread extends Thread {
 			} else if(packetType == GFProtocol.PacketType.LOGIN)
 			{
 				Player receivedPlayer = GFProtocol.getPlayerFromLoginPacket(receivedPacket);
-				PlayerHandler player = null;
 				boolean success = false;
 				
 				if(receivedPlayer != null)
@@ -73,7 +68,7 @@ public class ClientThread extends Thread {
 						
 						if(dbPlayer.getPassword().equals(receivedPlayer.getPassword()))
 						{
-							player = new PlayerHandler(dbPlayer, this);
+							this.player = new PlayerHandler(dbPlayer, this);
 							success = true;
 						}
 					} catch (Exception e) {
@@ -83,7 +78,7 @@ public class ClientThread extends Thread {
 				
 				this.sendPacket(String.format(GFProtocol.LOGIN_RESPONSE, ((success) ? "T" : "F" )));
 				
-				if(success && player != null)
+				if(success && this.player != null)
 				{
 					System.out.println("O jogador " + player.getName() + " entrou no jogo.");
 					game.onPlayerJoined(player);
@@ -103,7 +98,11 @@ public class ClientThread extends Thread {
 				}
 				
 				this.sendPacket(String.format(GFProtocol.REGISTER_RESPONSE, ((success) ? "T" : "F")));
-			} else
+			} else if(packetType == GFProtocol.PacketType.BINGO)
+			{
+				
+			}
+			else
 			{
 				System.out.println("Pacote estranho recebido.");
 				this.sendPacket(GFProtocol.KICK);

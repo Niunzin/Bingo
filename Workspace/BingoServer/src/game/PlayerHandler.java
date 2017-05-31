@@ -11,10 +11,10 @@ public class PlayerHandler extends Player {
 	
 	public PlayerHandler(Player player, ClientThread connection)
 	{
-		this.setName(player.getName());
-		this.setEmail(player.getEmail());
-		this.setWinsCount(player.getWinsCount());
-		this.setEmail(player.getPassword());
+		super.setName(player.getName());
+		super.setEmail(player.getEmail());
+		super.setWinsCount(player.getWinsCount());
+		super.setPassword(player.getPassword());
 		this.connection = connection;
 	}
 	
@@ -34,6 +34,11 @@ public class PlayerHandler extends Player {
 	public void disconnect()
 	{
 		this.connection.disconnect();
+	}
+	
+	public void sendMessage(String packet)
+	{
+		this.connection.sendPacket(packet);
 	}
 
 	@Override
