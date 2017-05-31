@@ -36,7 +36,13 @@ public class Game extends Thread {
 			}
 		}
 		
-		this.start();
+		if(playerList.size() > 1)
+			this.start();
+		else
+		{
+			currentCountDownTime = 0;
+			this.startCountDown();
+		}
 	}
 	
 	public synchronized void start()
@@ -56,8 +62,7 @@ public class Game extends Thread {
 		
 		String winnerJson = new Gson().toJson((Player) winner);
 		
-		for(PlayerHandler player : this.playerList)
-			player.sendMessage(String.format(GFProtocol.END_GAME, winnerJson));
+		this.broadcast(String.format(GFProtocol.END_GAME, winnerJson));
 	}
 	
 	public synchronized boolean isFull()
@@ -68,6 +73,18 @@ public class Game extends Thread {
 	public synchronized boolean isGameStarted()
 	{
 		return this.started;
+	}
+	
+	public synchronized void broadcast(String packet)
+	{
+		for(PlayerHandler player : this.playerList)
+			player.sendMessage(packet);
+	}
+	
+	public synchronized void disconnect(PlayerHandler player)
+	{
+		playerList.remove(player);
+		player.kick();
 	}
 	
 	public synchronized void onPlayerJoined(PlayerHandler player)

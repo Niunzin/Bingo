@@ -28,12 +28,7 @@ public class PlayerHandler extends Player {
 
 	public void kick()
 	{
-		this.connection.sendPacket(GFProtocol.KICK);
-	}
-	
-	public void disconnect()
-	{
-		this.connection.disconnect();
+		this.connection.disconnectPlayer();
 	}
 	
 	public void sendMessage(String packet)

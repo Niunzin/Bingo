@@ -26,6 +26,7 @@ public class ClientThread extends Thread {
 	protected Scanner					input			= null;
 	protected Gson						gson			= null;
 	protected PlayerHandler				player 			= null;
+	protected boolean					connected		= false;
 	
 	public ClientThread(Socket socket, ArrayList<ClientThread> clientList, SocketHandler handler, Game game)
 	{
@@ -34,6 +35,7 @@ public class ClientThread extends Thread {
 		this.handler	= handler;
 		this.game		= game;
 		this.gson		= new Gson();
+		this.connected = true;
 		
 		try {
 			this.input = new Scanner(this.socket.getInputStream());
@@ -45,7 +47,7 @@ public class ClientThread extends Thread {
 	@Override
 	public void run()
 	{
-		while(this.input.hasNextLine())
+		while(this.input.hasNextLine() && connected)
 		{
 			String receivedPacket = this.input.nextLine();
 			int packetType = GFProtocol.getPacketType(receivedPacket);
@@ -109,6 +111,12 @@ public class ClientThread extends Thread {
 			}
 		}
 	}
+	
+	public void disconnectPlayer()
+	{
+		this.disconnect();
+		this.game.disconnect(player);
+	}
 
 	public void sendPacket(String packet)
 	{
@@ -118,6 +126,9 @@ public class ClientThread extends Thread {
 	public void disconnect()
 	{
 		this.handler.disconnect();
+		this.sendPacket(GFProtocol.KICK);
+		this.disconnect();
+		this.connected = false;
 	}
 
 }
