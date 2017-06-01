@@ -13,13 +13,6 @@ public class Server {
 	{
 		try
 		{
-			Ranking rank = Players.getRanking();
-			String r = new Gson().toJson(rank);
-			System.out.println(r);
-		} catch(Exception e) { System.out.println(e.getMessage()); }
-		
-		try
-		{
 			ServerThread serverThread =
 					new ServerThread(Server.LISTEN_PORT);
 			

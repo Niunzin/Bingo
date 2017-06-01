@@ -108,6 +108,7 @@ public class ClientThread extends Thread {
 			{
 				System.out.println("Pacote estranho recebido.");
 				this.sendPacket(GFProtocol.KICK);
+				this.disconnect();
 			}
 		}
 	}
